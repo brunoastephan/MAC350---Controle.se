@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/gradient_color"
     tools:context=".MainActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -135,7 +136,7 @@
                 android:text="TextView" />
 
             <TextClock
-                android:id="@+id/dummyTextClok"
+                android:id="@+id/dummyTextClock"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
