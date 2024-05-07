@@ -14,6 +14,15 @@ Esse projeto foi feito como atividade da Disciplina MAC0350 - Introdução ao De
 - Criação de metas de gasto por usuário visando redução de custos em intervalo de tempo definido
 - Criação de relatório de gastos 
 
+## Compilação de Projeto
+
+Esse projeto está utilizando a ferramenta Android Studio, então é necessária a instalação da mesma para executar a compilação do Projeto.
+Para compilar o projeto, siga os seguintes passos:
+
+- Abra o projeto no Android Studio
+- Sincronize o Gradle, caso solicitado pelo programa
+- Execute o Projeto (Atalho padrão: Shift + F10)
+
 ## Créditos
 
 @Fernando-crz - Antonio Fernando Silva e Cruz Filho - fernandof.cruz@usp.br
