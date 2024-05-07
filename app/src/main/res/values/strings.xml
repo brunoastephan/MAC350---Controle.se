@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">controleSe</string>
+    <string name="day_button">DIA</string>
+    <string name="month_button">MÊS</string>
+    <string name="year_button">ANO</string>
+    <string name="create_new_transaction">Criar nova transação</string>
+    <string name="transaction_statistics_descripition">Estatísticas de transações registradas no aplicativo</string>
+
 </resources>
