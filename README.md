@@ -8,7 +8,6 @@ Esse projeto foi feito como atividade da Disciplina MAC0350 - Introdução ao De
 
 ## Funcionalidades do Aplicativo
 
-- Sistema de Autenticação de Usuário
 - Adição de registro de gasto por usuário em data especificada
 - *Tracking* de gastos à nível anual, mensal e diário de usuário
 - Criação de metas de gasto por usuário visando redução de custos em intervalo de tempo definido
