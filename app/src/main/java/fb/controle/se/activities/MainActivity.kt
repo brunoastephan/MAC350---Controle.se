@@ -1,7 +1,8 @@
-package fb.controle.se
+package fb.controle.se.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import fb.controle.se.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
