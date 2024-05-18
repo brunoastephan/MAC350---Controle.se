@@ -29,7 +29,7 @@ object DatabaseContract {
                 "${TransactionsEntry.COLUMN_DATE} DATETIME NOT NULL," +
                 "${TransactionsEntry.COLUMN_VALUE} FLOAT NOT NULL," +
                 "${TransactionsEntry.COLUMN_CATEGORY_ID} INT NOT NULL," +
-                "FOREIGN KEY (${TransactionsEntry.COLUMN_CATEGORY_ID} REFERENCES ${CategoriesEntry.TABLE_NAME}(${BaseColumns._ID})" +
+                "FOREIGN KEY (${TransactionsEntry.COLUMN_CATEGORY_ID}) REFERENCES ${CategoriesEntry.TABLE_NAME}(${BaseColumns._ID})" +
                 ")"
 
     private const val SQL_CREATE_CATEGORIES_ENTRIES =
@@ -45,7 +45,7 @@ object DatabaseContract {
                 "${GoalsEntry.COLUMN_DUE_DATE} DATETIME NOT NULL," +
                 "${GoalsEntry.COLUMN_EXPENSE_LIMIT} FLOAT NOT NULL," +
                 "${GoalsEntry.COLUMN_CATEGORY_ID} INT NOT NULL," +
-                "FOREIGN KEY (${GoalsEntry.COLUMN_CATEGORY_ID} REFERENCES ${CategoriesEntry.TABLE_NAME}(${BaseColumns._ID})" +
+                "FOREIGN KEY (${GoalsEntry.COLUMN_CATEGORY_ID}) REFERENCES ${CategoriesEntry.TABLE_NAME}(${BaseColumns._ID})" +
                 ")"
 
     private const val SQL_DELETE_TRANSACTIONS_ENTRIES = "DROP TABLE IF EXISTS ${TransactionsEntry.TABLE_NAME}"
