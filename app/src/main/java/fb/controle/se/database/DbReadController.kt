@@ -2,13 +2,71 @@ package fb.controle.se.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-class DbReadController(context: Context) {
-    private var database : SQLiteDatabase
+import android.provider.BaseColumns
+import android.provider.ContactsContract.Data
+
+open class DbReadController(context: Context) {
+    protected var database : SQLiteDatabase
 
     private var dbHelper : DbHelper
 
     init {
         dbHelper = DbHelper(context)
-        database = dbHelper.writableDatabase
+        database = dbHelper.readableDatabase
     }
+}
+
+class DbTransactionReader(context: Context) : DbReadController(context) {
+
+    private val projection = arrayOf(
+        BaseColumns._ID,
+        DatabaseContract.TransactionsEntry.COLUMN_DATE,
+        DatabaseContract.TransactionsEntry.COLUMN_VALUE,
+        DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID
+    )
+    fun readTransactionFromId(id: String) : List<Long> {
+
+        val selection = "${DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID} = ?"
+        val selectionArgs = arrayOf(id)
+
+        val cursor = database.query(
+            DatabaseContract.TransactionsEntry.TABLE_NAME,
+            projection,
+            selection,
+            selectionArgs,
+            null,
+            null,
+            null
+        )
+
+        val itemIds = mutableListOf<Long>()
+        with (cursor) {
+            while (moveToNext()) {
+                val itemId = getLong(getColumnIndexOrThrow(BaseColumns._ID))
+                itemIds.add(itemId)
+            }
+        }
+
+        cursor.close()
+
+        return itemIds
+
+    }
+}
+
+
+class DbCategoryReader(context: Context) : DbReadController(context) {
+    private val projection = arrayOf(
+        BaseColumns._ID,
+        DatabaseContract.CategoriesEntry.COLUMN_NAME,
+        DatabaseContract.CategoriesEntry.COLUMN_ICON
+    )
+}
+class DbGoalReader(context: Context) : DbReadController(context) {
+    private val projection = arrayOf(
+        BaseColumns._ID,
+        DatabaseContract.GoalsEntry.COLUMN_DUE_DATE,
+        DatabaseContract.GoalsEntry.COLUMN_EXPENSE_LIMIT,
+        DatabaseContract.GoalsEntry.COLUMN_CATEGORY_ID
+    )
 }
