@@ -24,6 +24,28 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
         DatabaseContract.TransactionsEntry.COLUMN_VALUE,
         DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID
     )
+
+    fun readTransactionTotal() : Float {
+        val totalColumn = "total"
+        val transactionsSumSQL =
+            "SELECT SUM(${DatabaseContract.TransactionsEntry.COLUMN_VALUE}) " +
+                    "AS ${totalColumn} " +
+                    "FROM ${DatabaseContract.TransactionsEntry.TABLE_NAME}"
+
+        val cursor = database.rawQuery(transactionsSumSQL, null)
+
+        if (!cursor.moveToFirst()) {
+            cursor.close()
+            return 0F
+        }
+
+        val total = cursor.getFloat(cursor.getColumnIndexOrThrow(totalColumn))
+
+        cursor.close()
+
+        return total
+    }
+
     fun readTransactionFromId(id: String) : List<Long> {
 
         val selection = "${DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID} = ?"
