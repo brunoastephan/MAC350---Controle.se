@@ -2,8 +2,14 @@ package fb.controle.se.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.os.Build
 import android.provider.BaseColumns
 import android.provider.ContactsContract.Data
+import androidx.annotation.RequiresApi
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Date
 
 open class DbReadController(context: Context) {
     protected var database : SQLiteDatabase
@@ -44,6 +50,30 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
         cursor.close()
 
         return total
+    }
+
+    fun readTransactionsInTimeInterval(beginTime : LocalDateTime, endTime : LocalDateTime) :  MutableList<Int> {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        val transactionsSumTimeIntervalSQL =
+            "SELECT ${BaseColumns._ID} " +
+                    "FROM ${DatabaseContract.TransactionsEntry.TABLE_NAME} " +
+                    "WHERE ${DatabaseContract.TransactionsEntry.COLUMN_DATE} BETWEEN \'${beginTime.format(formatter)}\' AND \'${endTime.format(formatter)}\'"
+
+        val cursor = database.rawQuery(transactionsSumTimeIntervalSQL, null)
+
+        val transactions = mutableListOf<Int>()
+
+        with (cursor) {
+            while (moveToNext()) {
+                val itemId = getInt(getColumnIndexOrThrow(BaseColumns._ID))
+                transactions.add(itemId)
+            }
+        }
+
+        cursor.close()
+
+        return transactions
     }
 
     fun readTransactionFromId(id: String) : List<Long> {
