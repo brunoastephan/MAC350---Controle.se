@@ -13,6 +13,8 @@ import fb.controle.se.database.DbHelper
 import fb.controle.se.database.DbReadController
 import fb.controle.se.database.DbTransactionReader
 import fb.controle.se.database.DbWriteController
+import java.time.LocalDate
+import java.time.LocalDateTime
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +37,14 @@ class MainActivity : AppCompatActivity() {
 
         writer.addTransaction("2024-05-17 23:19:32", 12.5F, 1)
         writer.addTransaction("2022-12-31 21:19:32", 33.5F, 2)
-        writer.addTransaction("2023-04-17 19:23:32", 45.23F, 1)
+        writer.addTransaction("2024-04-17 19:23:32", 45.23F, 1)
+        writer.addTransaction("2025-04-17 19:23:32", 45.23F, 2)
+
 
         val readController = DbTransactionReader(this)
 
+        val transactionsInRange = readController.readTransactionsInTimeInterval(LocalDateTime.of(2023, 12, 25, 6, 23), LocalDateTime.now())
+        Log.i("SQL", "transactions in datetime range: $transactionsInRange")
         Log.i("SQL", "transaction total: ${readController.readTransactionTotal()}")
 
         val transactionTotalView = findViewById<TextView>(R.id.TransactionTotalView)
