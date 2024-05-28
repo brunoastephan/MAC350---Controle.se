@@ -1,9 +1,12 @@
 package fb.controle.se.activities
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.TextView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fb.controle.se.R
 import fb.controle.se.database.DatabaseContract
 import fb.controle.se.database.DbHelper
@@ -16,6 +19,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val btnAddTrans = findViewById<FloatingActionButton>(R.id.addTransactionFloatingButton)
+        btnAddTrans.setOnClickListener {
+            val intent = Intent(this, NewExpenseActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
         this.deleteDatabase(DbHelper.DATABASE_NAME)
 
@@ -36,5 +45,7 @@ class MainActivity : AppCompatActivity() {
         transactionTotalView.text = getString(R.string.transaction_total).format(readController.readTransactionTotal())
 
         supportActionBar?.hide()
+
+
     }
 }
