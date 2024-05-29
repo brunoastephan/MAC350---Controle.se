@@ -2,14 +2,9 @@ package fb.controle.se.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import android.os.Build
 import android.provider.BaseColumns
-import android.provider.ContactsContract.Data
-import androidx.annotation.RequiresApi
-import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 open class DbReadController(context: Context) {
     protected var database : SQLiteDatabase
@@ -74,6 +69,45 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
         cursor.close()
 
         return transactions
+    }
+    
+    fun readTransactionsInDay() : MutableList<Int> {
+        val endDateTime = LocalDateTime.now()
+        val beginDateTime = LocalDateTime.of(
+            endDateTime.year,
+            endDateTime.month,
+            endDateTime.dayOfMonth,
+            0,
+            0
+        )
+
+        return readTransactionsInTimeInterval(beginDateTime, endDateTime)
+    }
+    
+    fun readTransactionsInMonth() : MutableList<Int> {
+        val endDateTime = LocalDateTime.now()
+        val beginDateTime = LocalDateTime.of(
+            endDateTime.year,
+            endDateTime.month,
+            1,
+            0,
+            0
+        )
+
+        return readTransactionsInTimeInterval(beginDateTime, endDateTime)
+    }
+    
+    fun readTransactionsInYear() : MutableList<Int> {
+        val endDateTime = LocalDateTime.now()
+        val beginDateTime = LocalDateTime.of(
+            endDateTime.year,
+            1,
+            1,
+            0,
+            0
+        )
+
+        return readTransactionsInTimeInterval(beginDateTime, endDateTime)
     }
 
     fun readTransactionFromId(id: String) : List<Long> {
