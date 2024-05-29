@@ -45,10 +45,10 @@ class MainActivity : AppCompatActivity() {
 
         val transactionsInRange = readController.readTransactionsInTimeInterval(LocalDateTime.of(2023, 12, 25, 6, 23), LocalDateTime.now())
         Log.i("SQL", "transactions in datetime range: $transactionsInRange")
-        Log.i("SQL", "transaction total: ${readController.readTransactionTotal()}")
+        Log.i("SQL", "transaction total: ${readController.readTransactionsTotal()}")
 
         val transactionTotalView = findViewById<TextView>(R.id.TransactionTotalView)
-        transactionTotalView.text = getString(R.string.transaction_total).format(readController.readTransactionTotal())
+        transactionTotalView.text = getString(R.string.transaction_total).format(readController.readTransactionsTotal())
 
         supportActionBar?.hide()
 

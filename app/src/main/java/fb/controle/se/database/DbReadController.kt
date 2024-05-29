@@ -31,7 +31,7 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
         DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID
     )
 
-    fun readTransactionTotal() : Float {
+    fun readTransactionsTotal() : Float {
         val totalColumn = "total"
         val transactionsSumSQL =
             "SELECT SUM(${DatabaseContract.TransactionsEntry.COLUMN_VALUE}) " +
