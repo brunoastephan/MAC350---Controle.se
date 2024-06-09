@@ -99,8 +99,8 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
 
         return transactions
     }
-    
-    fun readTransactionsInDay() : MutableList<Int> {
+
+    fun readTransactionsInDay(): MutableList<Int> {
         val endDateTime = LocalDateTime.now()
         val beginDateTime = LocalDateTime.of(
             endDateTime.year,
@@ -112,8 +112,8 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
 
         return readTransactionsInTimeInterval(beginDateTime, endDateTime)
     }
-    
-    fun readTransactionsInMonth() : MutableList<Int> {
+
+    fun readTransactionsInMonth(): MutableList<Int> {
         val endDateTime = LocalDateTime.now()
         val beginDateTime = LocalDateTime.of(
             endDateTime.year,
@@ -125,8 +125,8 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
 
         return readTransactionsInTimeInterval(beginDateTime, endDateTime)
     }
-    
-    fun readTransactionsInYear() : MutableList<Int> {
+
+    fun readTransactionsInYear(): MutableList<Int> {
         val endDateTime = LocalDateTime.now()
         val beginDateTime = LocalDateTime.of(
             endDateTime.year,
