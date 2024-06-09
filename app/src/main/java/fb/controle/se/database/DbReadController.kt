@@ -47,19 +47,48 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
         return total
     }
 
-    fun readTransactionsInTimeInterval(beginTime : LocalDateTime, endTime : LocalDateTime) :  MutableList<Int> {
+    fun readTransactionsTotalFromIds(ids: List<Int>): Float {
+        val selection = "${BaseColumns._ID} IN (${ids.joinToString()})"
+
+        val cursor = database.query(
+            DatabaseContract.TransactionsEntry.TABLE_NAME,
+            arrayOf("SUM(${DatabaseContract.TransactionsEntry.COLUMN_VALUE})"),
+            selection,
+            null,
+            null,
+            null,
+            null
+        )
+
+        var total : Float = 0F
+        with (cursor) {
+            if (moveToFirst()) total = getFloat(0)
+        }
+        cursor.close()
+
+        return total
+    }
+
+    fun readTransactionsInTimeInterval(
+        beginTime: LocalDateTime,
+        endTime: LocalDateTime
+    ): MutableList<Int> {
         val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
         val transactionsSumTimeIntervalSQL =
             "SELECT ${BaseColumns._ID} " +
                     "FROM ${DatabaseContract.TransactionsEntry.TABLE_NAME} " +
-                    "WHERE ${DatabaseContract.TransactionsEntry.COLUMN_DATE} BETWEEN \'${beginTime.format(formatter)}\' AND \'${endTime.format(formatter)}\'"
+                    "WHERE ${DatabaseContract.TransactionsEntry.COLUMN_DATE} BETWEEN \'${
+                        beginTime.format(
+                            formatter
+                        )
+                    }\' AND \'${endTime.format(formatter)}\'"
 
         val cursor = database.rawQuery(transactionsSumTimeIntervalSQL, null)
 
         val transactions = mutableListOf<Int>()
 
-        with (cursor) {
+        with(cursor) {
             while (moveToNext()) {
                 val itemId = getInt(getColumnIndexOrThrow(BaseColumns._ID))
                 transactions.add(itemId)
