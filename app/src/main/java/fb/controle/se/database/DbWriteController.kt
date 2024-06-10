@@ -3,13 +3,12 @@ package fb.controle.se.database
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-class DbWriteController(context : Context) {
+import android.database.sqlite.SQLiteOpenHelper
+
+class DbWriteController(context : Context, dbHelper: SQLiteOpenHelper = DbHelper(context)) {
     private var database : SQLiteDatabase
 
-    private var dbHelper : DbHelper
-
     init {
-        dbHelper = DbHelper(context)
         database = dbHelper.writableDatabase
     }
 

@@ -39,18 +39,9 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        this.deleteDatabase(DbHelper.DATABASE_NAME)
+        DbHelper(this).deleteDatabase()
 
         val writer = DbWriteController(this)
-        writer.addCategory("teste", "t")
-        writer.addCategory("sicrano", "s")
-
-
-        writer.addTransaction("2024-05-17 23:19:32", 12.5F, 1)
-        writer.addTransaction("2022-12-31 21:19:32", 33.5F, 2)
-        writer.addTransaction("2024-06-02 19:23:32", 45.23F, 1)
-        writer.addTransaction("2025-04-17 19:23:32", 45.23F, 2)
-
 
         val readController = DbTransactionReader(this)
 

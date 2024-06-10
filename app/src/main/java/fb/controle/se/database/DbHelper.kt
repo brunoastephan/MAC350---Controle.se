@@ -4,11 +4,8 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
-    companion object {
-        const val DATABASE_NAME = "CONTROLE_SE"
-        const val DATABASE_VERSION = 1
-    }
+
+open class DbHelper(private val context: Context, databaseName: String = "CONTROLE_SE", databaseVersion: Int = 1) : SQLiteOpenHelper(context, databaseName, null, databaseVersion) {
 
     override fun onCreate(db: SQLiteDatabase) {
         for (sqlCreateQuery in DatabaseContract.SQL_CREATE_ENTRIES_ARRAY) {
@@ -27,4 +24,7 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         onUpgrade(db, oldVersion, newVersion)
     }
 
+    fun deleteDatabase() {
+        context.deleteDatabase(databaseName)
+    }
 }
