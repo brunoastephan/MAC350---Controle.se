@@ -2,22 +2,21 @@ package fb.controle.se.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
+import android.util.Log
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
-open class DbReadController(context: Context) {
+open class DbReadController(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(context)) {
     protected var database : SQLiteDatabase
 
-    private var dbHelper : DbHelper
-
     init {
-        dbHelper = DbHelper(context)
         database = dbHelper.readableDatabase
     }
 }
 
-class DbTransactionReader(context: Context) : DbReadController(context) {
+class DbTransactionReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(context)) : DbReadController(context, dbHelper) {
 
     private val projection = arrayOf(
         BaseColumns._ID,
@@ -170,14 +169,14 @@ class DbTransactionReader(context: Context) : DbReadController(context) {
 }
 
 
-class DbCategoryReader(context: Context) : DbReadController(context) {
+class DbCategoryReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(context)) : DbReadController(context, dbHelper) {
     private val projection = arrayOf(
         BaseColumns._ID,
         DatabaseContract.CategoriesEntry.COLUMN_NAME,
         DatabaseContract.CategoriesEntry.COLUMN_ICON
     )
 }
-class DbGoalReader(context: Context) : DbReadController(context) {
+class DbGoalReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(context)) : DbReadController(context, dbHelper) {
     private val projection = arrayOf(
         BaseColumns._ID,
         DatabaseContract.GoalsEntry.COLUMN_DUE_DATE,
