@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class DbWriteController(context : Context, dbHelper: SQLiteOpenHelper = DbHelper(context)) {
     private var database : SQLiteDatabase
@@ -12,9 +14,12 @@ class DbWriteController(context : Context, dbHelper: SQLiteOpenHelper = DbHelper
         database = dbHelper.writableDatabase
     }
 
-    fun addTransaction(date: String, value: Float, categoryId: Int) : Long {
+    fun addTransaction(date: LocalDateTime, value: Float, categoryId: Int) : Long {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dateString = date.format(formatter)
+
         val valuesRow = ContentValues().apply {
-            put(DatabaseContract.TransactionsEntry.COLUMN_DATE, date)
+            put(DatabaseContract.TransactionsEntry.COLUMN_DATE, dateString)
             put(DatabaseContract.TransactionsEntry.COLUMN_VALUE, value)
             put(DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID, categoryId)
         }
@@ -31,9 +36,12 @@ class DbWriteController(context : Context, dbHelper: SQLiteOpenHelper = DbHelper
         return database.insert(DatabaseContract.CategoriesEntry.TABLE_NAME, null, valuesRow)
     }
 
-    fun addGoal(dueDate: String, expenseLimit: Float, categoryId: Int) : Long {
+    fun addGoal(dueDate: LocalDateTime, expenseLimit: Float, categoryId: Int) : Long {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+        val dueDateString = dueDate.format(formatter)
+
         val valuesRow = ContentValues().apply {
-            put(DatabaseContract.GoalsEntry.COLUMN_DUE_DATE, dueDate)
+            put(DatabaseContract.GoalsEntry.COLUMN_DUE_DATE, dueDateString)
             put(DatabaseContract.GoalsEntry.COLUMN_EXPENSE_LIMIT, expenseLimit)
             put(DatabaseContract.GoalsEntry.COLUMN_CATEGORY_ID, categoryId)
         }

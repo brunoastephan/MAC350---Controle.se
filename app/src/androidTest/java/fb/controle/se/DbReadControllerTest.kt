@@ -16,6 +16,7 @@ import org.junit.runner.RunWith
 import org.junit.Assert.*
 import org.junit.Before
 import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -36,6 +37,7 @@ class DbReadControllerTest {
     private lateinit var dbTransactionReader: DbTransactionReader
     private lateinit var dbCategoryReader: DbCategoryReader
     private lateinit var dbGoalReader: DbGoalReader
+    private val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
 
 
     private fun initializeDbWriter() {
@@ -56,11 +58,11 @@ class DbReadControllerTest {
         dbWriteController.addCategory("cat1", "1")
         dbWriteController.addCategory("cat2", "2")
 
-        dbWriteController.addTransaction("2021-05-17 23:19:32", 12.5F, 1)
-        dbWriteController.addTransaction("2022-12-31 21:19:32", 33.5F, 2)
-        dbWriteController.addTransaction("2023-06-02 19:23:32", 45.23F, 1)
-        dbWriteController.addTransaction("2024-06-10 12:12:12", 420.69F, 1)
-        dbWriteController.addTransaction("2025-04-17 19:23:32", 45.23F, 2)
+        dbWriteController.addTransaction(LocalDateTime.parse("2021-05-17 23:19:32", formatter), 12.5F, 1)
+        dbWriteController.addTransaction(LocalDateTime.parse("2022-12-31 21:19:32", formatter), 33.5F, 2)
+        dbWriteController.addTransaction(LocalDateTime.parse("2023-06-02 19:23:32", formatter), 45.23F, 1)
+        dbWriteController.addTransaction(LocalDateTime.parse("2024-06-10 12:12:12", formatter), 420.69F, 1)
+        dbWriteController.addTransaction(LocalDateTime.parse("2025-04-17 19:23:32", formatter), 45.23F, 2)
     }
 
     @Before
