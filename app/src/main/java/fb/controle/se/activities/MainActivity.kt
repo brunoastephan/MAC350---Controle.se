@@ -39,9 +39,10 @@ class MainActivity : AppCompatActivity() {
             finish()
         }
 
-        DbHelper(this).deleteDatabase()
+//        DbHelper(this).deleteDatabase()
 
         val writer = DbWriteController(this)
+        writer.addCategory("DummyCat", "12")
 
         val readController = DbTransactionReader(this)
 

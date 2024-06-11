@@ -3,9 +3,12 @@ package fb.controle.se.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import fb.controle.se.R
+import fb.controle.se.database.DbWriteController
+import java.time.LocalDateTime
 
 class NewExpenseActivity : AppCompatActivity() {
 
@@ -13,21 +16,37 @@ class NewExpenseActivity : AppCompatActivity() {
     private lateinit var display: TextView
     private lateinit var numberButtons: Array<Button>
     private lateinit var operatorButtons: Array<Button>
+    private lateinit var dbWriteController: DbWriteController
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_expense)
+        dbWriteController = DbWriteController(this)
+
+        dbWriteController.addCategory("teste", "1")
+        dbWriteController.addCategory("sicrano", ":)")
 
         val btnBack = findViewById<Button>(R.id.btn_back)
         btnBack.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            backToMainActivity()
+        }
+
+        val btnSubmit = findViewById<Button>(R.id.btn_submit)
+        btnSubmit.setOnClickListener {
+            val submitValue: Float = display.text.toString().toFloat()
+            dbWriteController.addTransaction(LocalDateTime.now(), submitValue, 1)
+            backToMainActivity()
         }
 
         initializeComponents()
 
         supportActionBar?.hide()
+    }
+
+    private fun backToMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun initializeComponents() {
