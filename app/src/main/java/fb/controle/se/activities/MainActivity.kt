@@ -41,6 +41,12 @@ class MainActivity : AppCompatActivity() {
         val transactionsTotalMonthFormatted : String = getString(R.string.transaction_total).format(transactionsTotalMonth)
         val transactionsTotalYearFormatted : String = getString(R.string.transaction_total).format(transactionsTotalYear)
 
+        transactionTotalView.text = when(transactionViewState) {
+            TransactionViewState.DAY -> transactionsTotalDayFormatted
+            TransactionViewState.MONTH -> transactionsTotalMonthFormatted
+            TransactionViewState.YEAR -> transactionsTotalYearFormatted
+        }
+
         btnDay.setOnClickListener {
             transactionViewState = TransactionViewState.DAY
             transactionTotalView.text = transactionsTotalDayFormatted
