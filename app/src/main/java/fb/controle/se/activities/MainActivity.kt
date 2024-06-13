@@ -5,6 +5,15 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fb.controle.se.R
 import fb.controle.se.database.DbHelper
@@ -70,12 +79,54 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun setupPieChart() {
+        val pieChart : PieChart = findViewById(R.id.dummyPieChart)
+        val visitors = ArrayList<PieEntry>()
+        visitors.add(PieEntry(512F, "cat1"))
+        visitors.add(PieEntry(2000F, "cat2"))
+        visitors.add(PieEntry(425F, "cat3"))
+        visitors.add(PieEntry(700F, "cat4"))
+        visitors.add(PieEntry(1200F, "cat5"))
+
+        val pieDataSet = PieDataSet(visitors, "Visitors")
+        pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
+
+        val pieData = PieData(pieDataSet)
+
+        pieChart.data = pieData
+        pieChart.description.isEnabled = false
+        pieChart.centerText = "Visitors"
+        pieChart.animate()
+    }
+
+    private fun setupBarChart() {
+        val barChart : BarChart = findViewById(R.id.dummyBarChart)
+        val visitors = ArrayList<BarEntry>()
+        visitors.add(BarEntry(2014F, 420F))
+        visitors.add(BarEntry(2015F, 475F))
+        visitors.add(BarEntry(2016F, 450F))
+        visitors.add(BarEntry(2017F, 510F))
+        visitors.add(BarEntry(2018F, 530F))
+
+        val barDataSet = BarDataSet(visitors, "Visitors")
+        barDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
+
+        val barData = BarData(barDataSet)
+
+        barChart.setFitBars(true)
+        barChart.data = barData
+        barChart.description.text = "Bar Chart Example"
+        barChart.animateY(1000)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         setupTransactionTotalView()
         setupTransactionFloatingButton()
+        setupPieChart()
+        setupBarChart()
 
         supportActionBar?.hide()
     }

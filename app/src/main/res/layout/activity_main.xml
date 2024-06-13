@@ -84,6 +84,19 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"/>
+            android:orientation="vertical">
+
+            <com.github.mikephil.charting.charts.BarChart
+                android:id="@+id/dummyBarChart"
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                />
+
+            <com.github.mikephil.charting.charts.PieChart
+                android:id="@+id/dummyPieChart"
+                android:layout_width="match_parent"
+                android:layout_height="320dp"
+                />
+        </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
