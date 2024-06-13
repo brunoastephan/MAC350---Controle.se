@@ -11,18 +11,12 @@ import android.widget.TextView
 import fb.controle.se.R
 import fb.controle.se.database.DbWriteController
 import java.time.LocalDateTime
-import java.math.BigDecimal
-import java.math.RoundingMode
 
 class NewExpenseActivity : AppCompatActivity() {
 
     private var strNumber = StringBuilder()
     private lateinit var display: TextView
     private lateinit var numberButtons: Array<Button>
-    private lateinit var operatorButtons: Array<Button>
-    private var operator: Operator = Operator.NONE
-    private var isOperatorClicked: Boolean = false
-    private var operand1: Float = 0.0F
 
     private lateinit var dbWriteController: DbWriteController
 
@@ -74,16 +68,6 @@ class NewExpenseActivity : AppCompatActivity() {
         val btn9:Button = findViewById(R.id.btn_9)
         val btn00:Button = findViewById(R.id.btn_00)
 
-        //Operators
-
-        val btnAdd:Button = findViewById(R.id.btn_add)
-        val btnSub:Button = findViewById(R.id.btn_sub)
-        val btnMul:Button = findViewById(R.id.btn_mul)
-        val btnDiv:Button = findViewById(R.id.btn_div)
-
-        val btnEquals:Button = findViewById(R.id.btn_equals)
-        btnEquals.setOnClickListener{buttonEqualsClick()}
-
         //Clear
 
         val btnDel:Button = findViewById((R.id.btn_del))
@@ -96,10 +80,6 @@ class NewExpenseActivity : AppCompatActivity() {
         for(i in numberButtons){
             i.setOnClickListener {numberButtonClicked(i)}
         }
-        operatorButtons = arrayOf(btnAdd, btnSub, btnMul, btnDiv)
-        for(i in operatorButtons){
-            i.setOnClickListener {operatorButtonClicked(i)}
-        }
     }
 
     private fun buttonClearClick() {
@@ -108,53 +88,24 @@ class NewExpenseActivity : AppCompatActivity() {
     }
 
     private fun buttonDelClick() {
-        strNumber.setLength(strNumber.length - 1)
+        if (strNumber.isNotEmpty()) strNumber.setLength(strNumber.length - 1)
         updateDisplay()
-    }
-
-    private fun buttonEqualsClick() {
-        val operand2 = strNumber.toString().toInt()
-        val result:Float = when(operator){
-            Operator.ADD -> operand1 + operand2
-            Operator.SUB -> operand1 - operand2
-            Operator.MUL -> operand1 * operand2
-            Operator.DIV -> operand1 / operand2
-            else -> 0.0F
-        }
-        strNumber.clear()
-        strNumber.append(result.toString())
-        updateDisplay()
-        isOperatorClicked = true
-    }
-
-    private fun operatorButtonClicked(btn: Button) {
-        operator = when (btn.text) {
-            "+" -> Operator.ADD
-            "-" -> Operator.SUB
-            "*" -> Operator.MUL
-            "/" -> Operator.DIV
-            else -> Operator.NONE
-        }
-        isOperatorClicked = true
     }
 
     private fun numberButtonClicked(btn: Button) {
-        if (isOperatorClicked){
-            operand1 = strNumber.toString().toFloat()
-            strNumber.clear()
-            isOperatorClicked = false
-        }
         strNumber.append(btn.text)
         updateDisplay()
     }
 
     private fun updateDisplay() {
-        //val aux = BigDecimal(strNumber.toString().toDouble()).setScale(2, RoundingMode.HALF_EVEN)
-        //strNumber.clear()
-        //strNumber.append(aux.toString())
-        display.text = strNumber
+        if (strNumber.isNotEmpty()) {
+            val aux1 = (strNumber.toString().toFloat())/100
+            var aux2 = aux1.toString()
+            if (aux2.substring(aux2.length-2, aux2.length-1) == ".") aux2 += "0"
+            display.text = aux2
+        }
+        else {
+            display.text = strNumber
+        }
     }
-
 }
-
-enum class Operator {ADD, SUB, MUL, DIV, NONE}
