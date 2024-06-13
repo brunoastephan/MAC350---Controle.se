@@ -36,7 +36,7 @@
         android:fontFamily="sans-serif-condensed"
         android:text="@string/btn_equals"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/btn_check"
+        app:layout_constraintBottom_toTopOf="@+id/btn_submit"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/btn_dot" />
@@ -302,7 +302,7 @@
         app:layout_constraintTop_toBottomOf="@+id/newTransactionHeaderLayout" />
 
     <Button
-        android:id="@+id/btn_check"
+        android:id="@+id/btn_submit"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginBottom="32dp"
@@ -319,9 +319,9 @@
         android:layout_height="80dp"
         android:backgroundTint="#814E27"
         app:icon="@drawable/back_icon"
-        app:layout_constraintEnd_toStartOf="@+id/btn_check"
+        app:layout_constraintEnd_toStartOf="@+id/btn_submit"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/btn_check" />
+        app:layout_constraintTop_toTopOf="@+id/btn_submit" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
