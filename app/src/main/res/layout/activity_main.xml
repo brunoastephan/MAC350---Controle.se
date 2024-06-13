@@ -9,17 +9,45 @@
     tools:context=".activities.MainActivity">
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addTransactionFloatingButton"
+        android:id="@+id/fab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
-        android:clickable="true"
-        android:contentDescription="@string/create_new_transaction"
-        android:focusable="true"
+        android:contentDescription="FAB Options"
+        android:src="@drawable/plus_icon"
+        app:backgroundTint="#422782"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@android:drawable/ic_input_add" />
+        app:tint="@android:color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="24dp"
+        android:contentDescription="FAB New Expense"
+        android:src="@drawable/money_icon"
+        android:visibility="invisible"
+        app:backgroundTint="#422782"
+        app:layout_constraintBottom_toTopOf="@+id/fab"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:tint="@android:color/white" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="FAB new Category"
+        android:src="@drawable/category_icon"
+        android:visibility="invisible"
+        app:backgroundTint="#422782"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/fab"
+        app:tint="@android:color/white" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/transactionHeaderLayout"
@@ -72,6 +100,7 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="380dp"
         android:layout_height="593dp"
         android:contentDescription="@string/transaction_statistics_descripition"
@@ -89,14 +118,12 @@
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/dummyBarChart"
                 android:layout_width="match_parent"
-                android:layout_height="320dp"
-                />
+                android:layout_height="320dp" />
 
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/dummyPieChart"
                 android:layout_width="match_parent"
-                android:layout_height="320dp"
-                />
+                android:layout_height="320dp" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

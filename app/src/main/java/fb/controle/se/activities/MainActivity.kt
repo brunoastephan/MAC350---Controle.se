@@ -3,6 +3,8 @@ package fb.controle.se.activities
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.TextView
 import com.github.mikephil.charting.charts.BarChart
@@ -25,13 +27,62 @@ enum class TransactionViewState {
 }
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var btnAddTrans : FloatingActionButton
     private lateinit var btnDay : Button
     private lateinit var btnMonth: Button
     private lateinit var btnYear : Button
     private lateinit var transactionTotalView : TextView
 
     private var transactionViewState = TransactionViewState.YEAR
+
+    private lateinit var fab : FloatingActionButton
+    private lateinit var fab1 : FloatingActionButton
+    private lateinit var fab2 : FloatingActionButton
+    private lateinit var fabOpen : Animation
+    private lateinit var fabClose : Animation
+    private lateinit var rotateForward : Animation
+    private lateinit var rotateBackward : Animation
+    private var isOpen = false
+
+    private fun animateFab() {
+        if (isOpen) {
+            fab.startAnimation(rotateBackward)
+            fab1.startAnimation(fabClose)
+            fab2.startAnimation(fabClose)
+            fab1.isClickable = false
+            fab2.isClickable = false
+            isOpen = false
+        } else {
+            fab.startAnimation(rotateForward)
+            fab1.startAnimation(fabOpen)
+            fab2.startAnimation(fabOpen)
+            fab1.isClickable = true
+            fab2.isClickable = true
+            isOpen = true
+        }
+    }
+
+    private fun setupFloatingFabButton() {
+        fab = findViewById(R.id.fab)
+        fab1 = findViewById(R.id.fab1)
+        fab2 = findViewById(R.id.fab2)
+
+        fabOpen = AnimationUtils.loadAnimation(this, R.anim.fab_open)
+        fabClose = AnimationUtils.loadAnimation(this, R.anim.fab_close)
+
+        rotateForward = AnimationUtils.loadAnimation(this, R.anim.rotate_forward)
+        rotateBackward = AnimationUtils.loadAnimation(this, R.anim.rotate_backward)
+
+        fab.setOnClickListener {
+            animateFab()
+        }
+
+        fab1.setOnClickListener {
+            animateFab()
+            val intent = Intent(this, NewExpenseActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+    }
 
     private fun setupTransactionTotalView() {
         transactionTotalView = findViewById(R.id.TransactionTotalView)
@@ -67,15 +118,6 @@ class MainActivity : AppCompatActivity() {
         btnYear.setOnClickListener {
             transactionViewState = TransactionViewState.YEAR
             transactionTotalView.text = transactionsTotalYearFormatted
-        }
-    }
-
-    private fun setupTransactionFloatingButton() {
-        btnAddTrans = findViewById(R.id.addTransactionFloatingButton)
-        btnAddTrans.setOnClickListener {
-            val intent = Intent(this, NewExpenseActivity::class.java)
-            startActivity(intent)
-            finish()
         }
     }
 
@@ -124,7 +166,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         setupTransactionTotalView()
-        setupTransactionFloatingButton()
+        setupFloatingFabButton()
+
         setupPieChart()
         setupBarChart()
 
