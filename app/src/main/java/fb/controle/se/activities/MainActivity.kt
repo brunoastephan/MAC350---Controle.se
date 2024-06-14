@@ -82,6 +82,13 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        fab2.setOnClickListener {
+            animateFab()
+            val intent = Intent(this, NewCategoryActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun setupTransactionTotalView() {
