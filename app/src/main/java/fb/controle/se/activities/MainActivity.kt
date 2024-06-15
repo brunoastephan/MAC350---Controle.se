@@ -1,8 +1,11 @@
 package fb.controle.se.activities
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.preference.PreferenceManager
+import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Button
@@ -27,6 +30,8 @@ enum class TransactionViewState {
 }
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var preferences: SharedPreferences
+
     private lateinit var btnDay : Button
     private lateinit var btnMonth: Button
     private lateinit var btnYear : Button
@@ -168,9 +173,46 @@ class MainActivity : AppCompatActivity() {
         barChart.animateY(1000)
     }
 
+    private fun setupFirstTimeLogin() {
+        Log.i("FIRST_LOGIN_INFO", "User first login registered")
+
+        // Setup Initial Categories
+        val writer = DbWriteController(this)
+
+        val categoryFood = getString(R.string.category_food)
+        val categoryTransport = getString(R.string.category_transport)
+        val categoryLeisure = getString(R.string.category_leisure)
+        val categoryFixedExpenses = getString(R.string.category_fixed_expenses)
+        val categoryExtraCosts = getString(R.string.category_extra_costs)
+
+        val categoryFoodIcon = getString(R.string.category_food_icon)
+        val categoryTransportIcon = getString(R.string.category_transport_icon)
+        val categoryLeisureIcon = getString(R.string.category_leisure_icon)
+        val categoryFixedExpensesIcon = getString(R.string.category_fixed_expenses_icon)
+        val categoryExtraCostsIcon = getString(R.string.category_extra_costs_icon)
+
+        writer.addCategory(categoryFood, categoryFoodIcon)
+        writer.addCategory(categoryTransport, categoryTransportIcon)
+        writer.addCategory(categoryLeisure, categoryLeisureIcon)
+        writer.addCategory(categoryFixedExpenses, categoryFixedExpensesIcon)
+        writer.addCategory(categoryExtraCosts, categoryExtraCostsIcon)
+
+        // save new first login state
+        val editor = preferences.edit()
+
+        editor.apply {
+            putBoolean("firstTimeLogin", false)
+            apply()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        preferences = getSharedPreferences("prefUserData", MODE_PRIVATE)
+        val firstTimeLogin = preferences.getBoolean("firstTimeLogin", true)
+        if (firstTimeLogin) setupFirstTimeLogin()
 
         setupTransactionTotalView()
         setupFloatingFabButton()

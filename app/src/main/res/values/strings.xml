@@ -20,4 +20,19 @@
     <string name="btn_del">DEL</string>
     <string name="btn_00">00</string>
 
+    <string name="category_food">Alimentação</string>
+    <string name="category_food_icon">🍕</string>
+
+    <string name="category_transport">Transporte</string>
+    <string name="category_transport_icon">🚗</string>
+
+    <string name="category_leisure">Lazer</string>
+    <string name="category_leisure_icon">🍾</string>
+
+    <string name="category_fixed_expenses">Despesas Fixas</string>
+    <string name="category_fixed_expenses_icon">🧾</string>
+
+    <string name="category_extra_costs">Gastos Adicionais</string>
+    <string name="category_extra_costs_icon">➕</string>
+
 </resources>
