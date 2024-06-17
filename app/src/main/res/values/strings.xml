@@ -34,5 +34,7 @@
 
     <string name="category_extra_costs">Gastos Adicionais</string>
     <string name="category_extra_costs_icon">➕</string>
+    <string name="new_cat">New category</string>
+    <string name="new_icon">New icon</string>
 
 </resources>
