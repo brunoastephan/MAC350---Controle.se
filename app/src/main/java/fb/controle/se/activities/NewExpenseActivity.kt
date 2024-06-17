@@ -25,9 +25,6 @@ class NewExpenseActivity : AppCompatActivity() {
         setContentView(R.layout.activity_new_expense)
         dbWriteController = DbWriteController(this)
 
-        dbWriteController.addCategory("teste", "1")
-        dbWriteController.addCategory("sicrano", ":)")
-
         val btnBack = findViewById<Button>(R.id.btn_back)
         btnBack.setOnClickListener {
             backToMainActivity()
