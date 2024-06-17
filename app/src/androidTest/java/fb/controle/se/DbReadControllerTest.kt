@@ -1,8 +1,10 @@
 package fb.controle.se
 
+import android.provider.BaseColumns
 import android.util.Log
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import fb.controle.se.database.DatabaseContract
 import fb.controle.se.database.DbCategoryReader
 import fb.controle.se.database.DbGoalReader
 import fb.controle.se.database.DbHelper
@@ -122,6 +124,22 @@ class DbReadControllerTest {
         endTime = LocalDateTime.of(2024, 12, 30, 12, 59)
         expected = mutableListOf(2, 3, 4)
         actual = dbTransactionReader.readTransactionsInTimeInterval(beginTime, endTime)
+        assertEquals(expected, actual)
+    }
+
+    @Test
+    fun testReadCategories() {
+        var expected: List<Map<String, Any>> = listOf()
+        var actual = dbCategoryReader.readCategories()
+        assertEquals(expected, actual)
+
+        addDbSamples1()
+
+        expected = listOf(
+            mapOf(BaseColumns._ID to 1, DatabaseContract.CategoriesEntry.COLUMN_NAME to "cat1", DatabaseContract.CategoriesEntry.COLUMN_ICON to "1"),
+            mapOf(BaseColumns._ID to 2, DatabaseContract.CategoriesEntry.COLUMN_NAME to "cat2", DatabaseContract.CategoriesEntry.COLUMN_ICON to "2"),
+        )
+        actual = dbCategoryReader.readCategories()
         assertEquals(expected, actual)
     }
 

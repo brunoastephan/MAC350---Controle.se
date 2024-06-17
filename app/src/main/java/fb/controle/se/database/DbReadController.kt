@@ -1,10 +1,13 @@
 package fb.controle.se.database
 
 import android.content.Context
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import android.provider.BaseColumns
+import android.provider.ContactsContract.Data
 import android.util.Log
+import androidx.core.graphics.rotationMatrix
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -175,6 +178,29 @@ class DbCategoryReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(c
         DatabaseContract.CategoriesEntry.COLUMN_NAME,
         DatabaseContract.CategoriesEntry.COLUMN_ICON
     )
+
+    fun readCategories(): List<Map<String, Any>> {
+        val cursor = database.rawQuery("SELECT * FROM ${DatabaseContract.CategoriesEntry.TABLE_NAME}", null)
+        if (!cursor.moveToFirst()) {
+            cursor.close()
+            return listOf()
+        }
+
+        var categories = listOf<Map<String, Any>>()
+        do {
+            categories = categories + getCategoriesMap(cursor)
+        } while (cursor.moveToNext())
+
+        cursor.close()
+        return categories
+    }
+
+    private fun getCategoriesMap(cursor: Cursor): Map<String, Any> {
+        val id = cursor.getInt(cursor.getColumnIndexOrThrow(projection[0]))
+        val name = cursor.getString(cursor.getColumnIndexOrThrow(projection[1]))
+        val icon = cursor.getString(cursor.getColumnIndexOrThrow(projection[2]))
+        return mapOf(projection[0] to id, projection[1] to name, projection[2] to icon)
+    }
 }
 class DbGoalReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(context)) : DbReadController(context, dbHelper) {
     private val projection = arrayOf(
