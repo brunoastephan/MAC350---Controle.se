@@ -143,6 +143,22 @@ class DbReadControllerTest {
         assertEquals(expected, actual)
     }
 
+    fun testReadIconFromId() {
+        var expected: String? = null
+        var actual = dbCategoryReader.readIconFromId(1)
+        assertEquals(expected, actual)
+
+        addDbSamples1()
+
+        expected = "1"
+        actual = dbCategoryReader.readIconFromId(1)
+        assertEquals(expected, actual)
+
+        expected = "2"
+        actual = dbCategoryReader.readIconFromId(2)
+        assertEquals(expected, actual)
+    }
+
     @After
     fun deleteDb() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext

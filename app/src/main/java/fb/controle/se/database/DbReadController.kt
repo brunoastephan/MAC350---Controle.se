@@ -201,6 +201,30 @@ class DbCategoryReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(c
         val icon = cursor.getString(cursor.getColumnIndexOrThrow(projection[2]))
         return mapOf(projection[0] to id, projection[1] to name, projection[2] to icon)
     }
+
+    fun readIconFromId(id: Int): String? {
+        val selection = "${BaseColumns._ID} = ?"
+        val selectionArgs = arrayOf(id.toString())
+
+        val cursor = database.query(
+            DatabaseContract.TransactionsEntry.TABLE_NAME,
+            projection,
+            selection,
+            selectionArgs,
+            null,
+            null,
+            null
+        )
+
+        var icon: String? = null
+        with (cursor) {
+            if (moveToFirst()) icon = getString(getColumnIndexOrThrow(projection[2]))
+        }
+        cursor.close()
+
+        return icon
+    }
+
 }
 class DbGoalReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(context)) : DbReadController(context, dbHelper) {
     private val projection = arrayOf(
