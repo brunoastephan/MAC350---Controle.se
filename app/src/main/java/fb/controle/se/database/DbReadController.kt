@@ -143,7 +143,7 @@ class DbTransactionReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelpe
 
     fun readTransactionFromId(id: String) : List<Long> {
 
-        val selection = "${DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID} = ?"
+        val selection = "${BaseColumns._ID} = ?"
         val selectionArgs = arrayOf(id)
 
         val cursor = database.query(
