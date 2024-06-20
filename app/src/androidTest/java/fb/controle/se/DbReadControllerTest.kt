@@ -128,6 +128,23 @@ class DbReadControllerTest {
     }
 
     @Test
+    fun testReadTransactionTotalFromCategoryId() {
+        var expected: Float = 0F
+        var actual: Float = dbTransactionReader.readTransactionsTotalFromCategoryId(1)
+        assertEquals(expected, actual, PRECISION)
+
+        addDbSamples1()
+
+        expected = 478.42F
+        actual = dbTransactionReader.readTransactionsTotalFromCategoryId(1)
+        assertEquals(expected, actual, PRECISION)
+
+        expected = 78.73F
+        actual = dbTransactionReader.readTransactionsTotalFromCategoryId(2)
+        assertEquals(expected, actual, PRECISION)
+    }
+
+    @Test
     fun testReadCategories() {
         var expected: List<Map<String, Any>> = listOf()
         var actual = dbCategoryReader.readCategories()

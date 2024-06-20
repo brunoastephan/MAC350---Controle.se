@@ -169,6 +169,28 @@ class DbTransactionReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelpe
         return itemIds
 
     }
+
+    fun readTransactionsTotalFromCategoryId(categoryId: Int): Float {
+        val selection = "${DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID} IN (${categoryId})"
+
+        val cursor = database.query(
+            DatabaseContract.TransactionsEntry.TABLE_NAME,
+            arrayOf("SUM(${DatabaseContract.TransactionsEntry.COLUMN_VALUE})"),
+            selection,
+            null,
+            null,
+            null,
+            null
+        )
+
+        var total : Float = 0F
+        with (cursor) {
+            if (moveToFirst()) total = getFloat(0)
+        }
+        cursor.close()
+
+        return total
+    }
 }
 
 
