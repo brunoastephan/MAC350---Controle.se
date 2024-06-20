@@ -25,6 +25,8 @@
         </activity>
         <activity android:name=".activities.NewCategoryActivity">
         </activity>
+        <activity android:name=".activities.CategoryChoiceActivity">
+        </activity>
     </application>
 
 </manifest>

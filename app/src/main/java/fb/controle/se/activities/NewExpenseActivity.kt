@@ -6,28 +6,33 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Display
 import android.view.View
-import android.widget.ArrayAdapter
 import android.widget.Button
-import android.widget.Spinner
 import android.widget.TextView
+import android.widget.Toast
 import fb.controle.se.R
-import fb.controle.se.database.DatabaseContract
-import fb.controle.se.database.DbWriteController
 import fb.controle.se.database.DbCategoryReader
+import fb.controle.se.database.DbWriteController
 import java.time.LocalDateTime
+import kotlin.random.Random
 
 class NewExpenseActivity : AppCompatActivity() {
+
+    companion object {
+        const val DEFAULT_CATEGORY_ICON = "❔"
+    }
 
     private var strNumber = StringBuilder()
     private lateinit var display: TextView
     private lateinit var numberButtons: Array<Button>
-    private lateinit var catSpinner: Spinner
+    private lateinit var btnCategory: Button
 
     private lateinit var dbWriteController: DbWriteController
     private lateinit var dbCategoryReader: DbCategoryReader
+    private var selectedCategory: Int = -1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.activity_new_expense)
         dbWriteController = DbWriteController(this)
         dbCategoryReader = DbCategoryReader(this)
@@ -38,28 +43,34 @@ class NewExpenseActivity : AppCompatActivity() {
         }
 
         val btnSubmit = findViewById<Button>(R.id.btn_submit)
-        btnSubmit.setOnClickListener {
-            val submitValue: Float = display.text.toString().toFloat()
-            dbWriteController.addTransaction(LocalDateTime.now(), submitValue, 1)
-            backToMainActivity()
-        }
+        btnSubmit.setOnClickListener { buttonSubmitClick() }
 
+        setupCategoryButton()
         initializeComponents()
-
-        catSpinner = findViewById(R.id.select_category)
-
-        loadSpinnerData()
 
         supportActionBar?.hide()
     }
 
-    private fun loadSpinnerData() {
-        val categories = dbCategoryReader.readCategories()
-        val categoryNames = categories.map { it[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String }
+    private fun buttonSubmitClick() {
+        if (selectedCategory == -1) {
+            Toast.makeText(this, getString(R.string.category_choice_invalid), Toast.LENGTH_SHORT).show()
+            return
+        }
+        val submitValue: Float = display.text.toString().toFloat()
+        dbWriteController.addTransaction(LocalDateTime.now(), submitValue, selectedCategory)
+        backToMainActivity()
+    }
 
-        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryNames)
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        catSpinner.adapter = adapter
+    private fun setupCategoryButton() {
+        btnCategory = findViewById(R.id.btn_category)
+        if (intent.extras != null) {
+            val selectedCategoryString = intent.extras!!.getString("selectedCategory")
+            if (selectedCategoryString != null) selectedCategory = selectedCategoryString.toInt()
+            btnCategory.text = dbCategoryReader.readIconFromId(selectedCategory)
+        }
+        else
+            btnCategory.text = DEFAULT_CATEGORY_ICON
+        btnCategory.setOnClickListener { buttonCategoryClick() }
     }
 
     private fun backToMainActivity() {
@@ -107,6 +118,12 @@ class NewExpenseActivity : AppCompatActivity() {
     private fun buttonDelClick() {
         if (strNumber.isNotEmpty()) strNumber.setLength(strNumber.length - 1)
         updateDisplay()
+    }
+
+    private fun buttonCategoryClick() {
+        val intent = Intent(this, CategoryChoiceActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun numberButtonClicked(btn: Button) {

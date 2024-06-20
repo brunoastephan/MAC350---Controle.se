@@ -16,13 +16,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <Button
+            android:id="@+id/btn_category"
+            android:layout_width="70dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="16dp"
+            android:backgroundTint="#275E82"
+            android:fontFamily="sans-serif-condensed"
+            android:text="@string/btn_category"
+            android:textAlignment="center"
+            android:textSize="40sp"
+            app:cornerRadius="10dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:id="@+id/newTransactionTotalView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="60sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btn_category"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
