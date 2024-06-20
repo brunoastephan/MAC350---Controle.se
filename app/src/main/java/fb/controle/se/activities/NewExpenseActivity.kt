@@ -6,10 +6,14 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Display
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
+import android.widget.Spinner
 import android.widget.TextView
 import fb.controle.se.R
+import fb.controle.se.database.DatabaseContract
 import fb.controle.se.database.DbWriteController
+import fb.controle.se.database.DbCategoryReader
 import java.time.LocalDateTime
 
 class NewExpenseActivity : AppCompatActivity() {
@@ -17,13 +21,16 @@ class NewExpenseActivity : AppCompatActivity() {
     private var strNumber = StringBuilder()
     private lateinit var display: TextView
     private lateinit var numberButtons: Array<Button>
+    private lateinit var catSpinner: Spinner
 
     private lateinit var dbWriteController: DbWriteController
+    private lateinit var dbCategoryReader: DbCategoryReader
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_new_expense)
         dbWriteController = DbWriteController(this)
+        dbCategoryReader = DbCategoryReader(this)
 
         val btnBack = findViewById<Button>(R.id.btn_back)
         btnBack.setOnClickListener {
@@ -39,7 +46,20 @@ class NewExpenseActivity : AppCompatActivity() {
 
         initializeComponents()
 
+        catSpinner = findViewById(R.id.select_category)
+
+        loadSpinnerData()
+
         supportActionBar?.hide()
+    }
+
+    private fun loadSpinnerData() {
+        val categories = dbCategoryReader.readCategories()
+        val categoryNames = categories.map { it[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String }
+
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, categoryNames)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        catSpinner.adapter = adapter
     }
 
     private fun backToMainActivity() {

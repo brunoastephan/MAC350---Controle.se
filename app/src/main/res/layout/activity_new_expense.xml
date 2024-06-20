@@ -246,4 +246,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_submit" />
 
+    <Spinner
+        android:id="@+id/select_category"
+        android:layout_width="120dp"
+        android:layout_height="50dp"
+        android:textAlignment="viewEnd"
+        app:layout_constraintEnd_toEndOf="@+id/newTransactionHeaderLayout"
+        app:layout_constraintTop_toTopOf="@+id/newTransactionHeaderLayout" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
