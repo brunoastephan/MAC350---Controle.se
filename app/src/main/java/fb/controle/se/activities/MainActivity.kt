@@ -39,6 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var btnMonth: Button
     private lateinit var btnYear : Button
     private lateinit var transactionTotalView : TextView
+    private lateinit var transactionTotalViewIndicator : TextView
 
     private var transactionViewState = TransactionViewState.YEAR
 
@@ -104,6 +105,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupTransactionTotalView() {
         transactionTotalView = findViewById(R.id.TransactionTotalView)
+        transactionTotalViewIndicator = findViewById(R.id.transactionTotalViewIndicator)
 
         btnDay = findViewById(R.id.visualizeDayButton)
         btnMonth = findViewById(R.id.visualizeMonthButton)
@@ -125,17 +127,27 @@ class MainActivity : AppCompatActivity() {
             TransactionViewState.YEAR -> transactionsTotalYearFormatted
         }
 
+        transactionTotalViewIndicator.text = when(transactionViewState) {
+            TransactionViewState.DAY -> getString(R.string.day_button)
+            TransactionViewState.MONTH -> getString(R.string.month_button)
+            TransactionViewState.YEAR -> getString(R.string.year_button)
+
+        }
+
         btnDay.setOnClickListener {
             transactionViewState = TransactionViewState.DAY
             transactionTotalView.text = transactionsTotalDayFormatted
+            transactionTotalViewIndicator.text = getString(R.string.day_button)
         }
         btnMonth.setOnClickListener {
             transactionViewState = TransactionViewState.MONTH
             transactionTotalView.text = transactionsTotalMonthFormatted
+            transactionTotalViewIndicator.text = getString(R.string.month_button)
         }
         btnYear.setOnClickListener {
             transactionViewState = TransactionViewState.YEAR
             transactionTotalView.text = transactionsTotalYearFormatted
+            transactionTotalViewIndicator.text = getString(R.string.year_button)
         }
     }
 
