@@ -5,6 +5,7 @@ import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.BaseColumns
 import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -21,6 +22,8 @@ import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fb.controle.se.R
+import fb.controle.se.database.DatabaseContract
+import fb.controle.se.database.DbCategoryReader
 import fb.controle.se.database.DbHelper
 import fb.controle.se.database.DbTransactionReader
 import fb.controle.se.database.DbWriteController
@@ -47,6 +50,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var rotateForward : Animation
     private lateinit var rotateBackward : Animation
     private var isOpen = false
+
+    private lateinit var dbCategoryReader: DbCategoryReader
+    private lateinit var dbTransactionReader: DbTransactionReader
 
     private fun animateFab() {
         if (isOpen) {
@@ -136,11 +142,76 @@ class MainActivity : AppCompatActivity() {
     private fun setupPieChart() {
         val pieChart : PieChart = findViewById(R.id.dummyPieChart)
         val visitors = ArrayList<PieEntry>()
-        visitors.add(PieEntry(512F, "cat1"))
-        visitors.add(PieEntry(2000F, "cat2"))
-        visitors.add(PieEntry(425F, "cat3"))
-        visitors.add(PieEntry(700F, "cat4"))
-        visitors.add(PieEntry(1200F, "cat5"))
+
+        val categories = dbCategoryReader.readCategories()
+
+        val categoryNames = mutableListOf<String>()
+        val categoryTotals = mutableListOf<Float>()
+        val categoryIds = categories.map { it[BaseColumns._ID] as Int }
+
+        for (categoryId in categoryIds) {
+            val total = dbTransactionReader.readTransactionsTotalFromIds(listOf(categoryId))
+            categoryTotals.add(total)
+        }
+
+        for (category in categories) {
+            categoryNames.add(category[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String)
+        }
+
+        for(i in categoryNames.indices){
+            if (categoryTotals[i] != 0.0F) visitors.add(PieEntry(categoryTotals[i], categoryNames[i]))
+        }
+
+        // Outra opção que estava testando:
+/*
+        // Step 1: Fetch all categories from DbCategoryReader
+        val categories = dbCategoryReader.readCategories()
+
+        // Step 2: Prepare a list to store unique category IDs with their names
+        val distinctCategories = mutableMapOf<Int, String>()
+
+        // Step 3: Populate distinctCategories map with unique category IDs and names
+        for (category in categories) {
+            val categoryId = category[BaseColumns._ID] as Int
+            if (!distinctCategories.containsKey(categoryId)) {
+                val categoryName = category[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String
+                distinctCategories[categoryId] = categoryName
+            }
+        }
+
+        // Step 4: Prepare a list to store totals for each category
+        val categoryTotals = mutableListOf<Float>()
+
+        // Step 5: Calculate total for each category using DbTransactionReader
+        for ((categoryId, _) in distinctCategories) {
+            val total = dbTransactionReader.readTransactionsTotalFromIds(listOf(categoryId))
+            categoryTotals.add(total)
+        }
+
+        Log.i("catlegaligorias", distinctCategories.toString())
+        Log.i(" catlegaltotais", categoryTotals.toString())
+        var x = "not ok"
+        if (categoryTotals.size == distinctCategories.size) {
+            x = "ok"
+            Log.i("teste se bate", x)
+        }
+*/
+
+        // Testes que estava usando:
+
+/*        Log.i("catlegaligorias", categoryNames.toString())
+        Log.i(" catlegaltotais", categoryTotals.toString())
+        var x = "not ok"
+        if (categoryTotals.size == categoryNames.size) {
+            x = "ok"
+            Log.i("teste se bate", x)
+        }*/
+
+        // visitors.add(PieEntry(512F, "cat1"))
+        // visitors.add(PieEntry(2000F, "cat2"))
+        // visitors.add(PieEntry(425F, "cat3"))
+        // visitors.add(PieEntry(700F, "cat4"))
+        // visitors.add(PieEntry(1200F, "cat5"))
 
         val pieDataSet = PieDataSet(visitors, "Visitors")
         pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
@@ -149,7 +220,7 @@ class MainActivity : AppCompatActivity() {
 
         pieChart.data = pieData
         pieChart.description.isEnabled = false
-        pieChart.centerText = "Visitors"
+        pieChart.centerText = "Seus Gastos"
         pieChart.animate()
     }
 
@@ -209,6 +280,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        dbCategoryReader = DbCategoryReader(this)
+        dbTransactionReader = DbTransactionReader(this)
 
         preferences = getSharedPreferences("prefUserData", MODE_PRIVATE)
         val firstTimeLogin = preferences.getBoolean("firstTimeLogin", true)
