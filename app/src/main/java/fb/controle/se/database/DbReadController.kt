@@ -207,7 +207,7 @@ class DbCategoryReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelper(c
         val selectionArgs = arrayOf(id.toString())
 
         val cursor = database.query(
-            DatabaseContract.TransactionsEntry.TABLE_NAME,
+            DatabaseContract.CategoriesEntry.TABLE_NAME,
             projection,
             selection,
             selectionArgs,
