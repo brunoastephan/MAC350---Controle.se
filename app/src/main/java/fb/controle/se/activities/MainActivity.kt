@@ -27,6 +27,8 @@ import fb.controle.se.database.DbCategoryReader
 import fb.controle.se.database.DbHelper
 import fb.controle.se.database.DbTransactionReader
 import fb.controle.se.database.DbWriteController
+import java.text.SimpleDateFormat
+import java.util.Calendar
 
 enum class TransactionViewState {
     DAY, MONTH, YEAR
@@ -159,100 +161,56 @@ class MainActivity : AppCompatActivity() {
 
         val categoryNames = mutableListOf<String>()
         val categoryTotals = mutableListOf<Float>()
-        val categoryIds = categories.map { it[BaseColumns._ID] as Int }
-
-        for (categoryId in categoryIds) {
-            val total = dbTransactionReader.readTransactionsTotalFromIds(listOf(categoryId))
-            categoryTotals.add(total)
-        }
 
         for (category in categories) {
+            val categoryId = category[BaseColumns._ID] as Int
+            val total = dbTransactionReader.readTransactionsTotalFromCategoryId(categoryId)
+            categoryTotals.add(total)
             categoryNames.add(category[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String)
         }
 
-        for(i in categoryNames.indices){
+        for (i in categoryNames.indices) {
             if (categoryTotals[i] != 0.0F) visitors.add(PieEntry(categoryTotals[i], categoryNames[i]))
         }
 
-        // Outra opção que estava testando:
-/*
-        // Step 1: Fetch all categories from DbCategoryReader
-        val categories = dbCategoryReader.readCategories()
-
-        // Step 2: Prepare a list to store unique category IDs with their names
-        val distinctCategories = mutableMapOf<Int, String>()
-
-        // Step 3: Populate distinctCategories map with unique category IDs and names
-        for (category in categories) {
-            val categoryId = category[BaseColumns._ID] as Int
-            if (!distinctCategories.containsKey(categoryId)) {
-                val categoryName = category[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String
-                distinctCategories[categoryId] = categoryName
-            }
-        }
-
-        // Step 4: Prepare a list to store totals for each category
-        val categoryTotals = mutableListOf<Float>()
-
-        // Step 5: Calculate total for each category using DbTransactionReader
-        for ((categoryId, _) in distinctCategories) {
-            val total = dbTransactionReader.readTransactionsTotalFromIds(listOf(categoryId))
-            categoryTotals.add(total)
-        }
-
-        Log.i("catlegaligorias", distinctCategories.toString())
-        Log.i(" catlegaltotais", categoryTotals.toString())
-        var x = "not ok"
-        if (categoryTotals.size == distinctCategories.size) {
-            x = "ok"
-            Log.i("teste se bate", x)
-        }
-*/
-
-        // Testes que estava usando:
-
-/*        Log.i("catlegaligorias", categoryNames.toString())
-        Log.i(" catlegaltotais", categoryTotals.toString())
-        var x = "not ok"
-        if (categoryTotals.size == categoryNames.size) {
-            x = "ok"
-            Log.i("teste se bate", x)
-        }*/
-
-        // visitors.add(PieEntry(512F, "cat1"))
-        // visitors.add(PieEntry(2000F, "cat2"))
-        // visitors.add(PieEntry(425F, "cat3"))
-        // visitors.add(PieEntry(700F, "cat4"))
-        // visitors.add(PieEntry(1200F, "cat5"))
-
-        val pieDataSet = PieDataSet(visitors, "Visitors")
+        val pieDataSet = PieDataSet(visitors, "Categorias")
         pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
 
         val pieData = PieData(pieDataSet)
 
         pieChart.data = pieData
         pieChart.description.isEnabled = false
-        pieChart.centerText = "Seus Gastos"
+        pieChart.centerText = "Divisão dos Gastos"
         pieChart.animate()
     }
 
     private fun setupBarChart() {
         val barChart : BarChart = findViewById(R.id.dummyBarChart)
         val visitors = ArrayList<BarEntry>()
+
+        // Teste para tentar pegar data do dia anterior
+
+        /*
+        val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+        val cal = Calendar.getInstance()
+        cal.add(Calendar.DAY_OF_MONTH, -1)
+        Log.i("teste1", dateFormat.format(cal.time))
+        */
+
         visitors.add(BarEntry(2014F, 420F))
         visitors.add(BarEntry(2015F, 475F))
         visitors.add(BarEntry(2016F, 450F))
         visitors.add(BarEntry(2017F, 510F))
         visitors.add(BarEntry(2018F, 530F))
 
-        val barDataSet = BarDataSet(visitors, "Visitors")
+        val barDataSet = BarDataSet(visitors, "Datas")
         barDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
 
         val barData = BarData(barDataSet)
 
         barChart.setFitBars(true)
         barChart.data = barData
-        barChart.description.text = "Bar Chart Example"
+        barChart.description.text = "Gastos ao Longo do Tempo"
         barChart.animateY(1000)
     }
 
