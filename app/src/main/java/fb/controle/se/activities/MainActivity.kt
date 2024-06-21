@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.provider.BaseColumns
 import android.util.Log
 import android.view.animation.Animation
@@ -24,11 +23,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fb.controle.se.R
 import fb.controle.se.database.DatabaseContract
 import fb.controle.se.database.DbCategoryReader
-import fb.controle.se.database.DbHelper
 import fb.controle.se.database.DbTransactionReader
 import fb.controle.se.database.DbWriteController
-import java.text.SimpleDateFormat
-import java.util.Calendar
 
 enum class TransactionViewState {
     DAY, MONTH, YEAR
@@ -155,32 +151,26 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupPieChart() {
         val pieChart : PieChart = findViewById(R.id.dummyPieChart)
-        val visitors = ArrayList<PieEntry>()
+        val categoryEntries = ArrayList<PieEntry>()
 
         val categories = dbCategoryReader.readCategories()
-
-        val categoryNames = mutableListOf<String>()
-        val categoryTotals = mutableListOf<Float>()
 
         for (category in categories) {
             val categoryId = category[BaseColumns._ID] as Int
             val total = dbTransactionReader.readTransactionsTotalFromCategoryId(categoryId)
-            categoryTotals.add(total)
-            categoryNames.add(category[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String)
+            val categoryName = category[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String
+
+            if (total != 0.0F) categoryEntries.add(PieEntry(total, categoryName))
         }
 
-        for (i in categoryNames.indices) {
-            if (categoryTotals[i] != 0.0F) visitors.add(PieEntry(categoryTotals[i], categoryNames[i]))
-        }
-
-        val pieDataSet = PieDataSet(visitors, "Categorias")
+        val pieDataSet = PieDataSet(categoryEntries, getString(R.string.label_category_pie_chart))
         pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
 
         val pieData = PieData(pieDataSet)
 
         pieChart.data = pieData
         pieChart.description.isEnabled = false
-        pieChart.centerText = "Divisão dos Gastos"
+        pieChart.centerText = getString(R.string.text_category_pie_chart)
         pieChart.animate()
     }
 

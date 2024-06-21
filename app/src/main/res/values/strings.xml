@@ -6,6 +6,8 @@
     <string name="create_new_transaction">Criar nova transação</string>
     <string name="transaction_statistics_descripition">Estatísticas de transações registradas no aplicativo</string>
     <string name="transaction_total">R$ %1$.2f</string>
+    <string name="label_category_pie_chart">Categorias</string>
+    <string name="text_category_pie_chart">Divisão dos Gastos</string>
 
     <string name="btn_1">1</string>
     <string name="btn_2">2</string>
