@@ -224,6 +224,19 @@ class DbTransactionReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelpe
 
         return transactions
     }
+
+    fun readTransactionsTotalFromCategoryIdInTimeInterval(
+        categoryId: Int,
+        beginTime: LocalDateTime,
+        endTime: LocalDateTime
+    ): Float {
+        return readTransactionsTotalFromIds(
+            readTransactionsFromCategoryIdInTimeInterval(
+                categoryId,
+                beginTime,
+                endTime).toList()
+        )
+    }
 }
 
 
