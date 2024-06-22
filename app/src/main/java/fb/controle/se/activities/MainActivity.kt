@@ -12,12 +12,15 @@ import android.widget.Button
 import android.widget.TextView
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fb.controle.se.R
@@ -178,29 +181,53 @@ class MainActivity : AppCompatActivity() {
         val barChart : BarChart = findViewById(R.id.dummyBarChart)
         val visitors = ArrayList<BarEntry>()
 
-        // Teste para tentar pegar data do dia anterior
 
-        /*
-        val dateFormat = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
-        val cal = Calendar.getInstance()
-        cal.add(Calendar.DAY_OF_MONTH, -1)
-        Log.i("teste1", dateFormat.format(cal.time))
-        */
+        val categories = dbCategoryReader.readCategories()
+        val categoryNames = categories.map { it[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String}
+        val categoryTransactionTotals = mutableListOf<Float>()
 
-        visitors.add(BarEntry(2014F, 420F))
-        visitors.add(BarEntry(2015F, 475F))
-        visitors.add(BarEntry(2016F, 450F))
-        visitors.add(BarEntry(2017F, 510F))
-        visitors.add(BarEntry(2018F, 530F))
+        for (category in categories) {
+            val categoryId = category[BaseColumns._ID] as Int
+            categoryTransactionTotals.add(dbTransactionReader.readTransactionsTotalFromCategoryId(categoryId))
+        }
+
+        // sort category names by transaction totals per category
+        val categoriesNameTransactionTotal = categoryTransactionTotals.zip(categoryNames)
+        val sortedCategoriesNameTransactionTotal = categoriesNameTransactionTotal.sortedByDescending { it.first }
+        val (sortedCategoryTransactionTotals, sortedCategoryNames) = sortedCategoriesNameTransactionTotal.unzip()
+
+        for ((i, categoryTransactionTotal) in sortedCategoryTransactionTotals.withIndex()) {
+            visitors.add(BarEntry(i.toFloat(), categoryTransactionTotal))
+        }
 
         val barDataSet = BarDataSet(visitors, "Datas")
         barDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
 
         val barData = BarData(barDataSet)
 
-        barChart.setFitBars(true)
+        barChart.setFitBars(false)
+        barChart.setDrawBarShadow(false)
+        barChart.setDrawGridBackground(false)
         barChart.data = barData
         barChart.description.text = "Gastos ao Longo do Tempo"
+        barChart.setVisibleXRangeMaximum(3F)
+
+        val xAxis = barChart.xAxis
+        xAxis.setDrawGridLines(false)
+        xAxis.setDrawLabels(true)
+        xAxis.setDrawAxisLine(false)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.granularity = 1F
+        xAxis.valueFormatter = IndexAxisValueFormatter(sortedCategoryNames)
+
+        val yAxisLeft = barChart.axisLeft
+        yAxisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
+        yAxisLeft.setDrawGridLines(false)
+        yAxisLeft.setDrawAxisLine(false)
+        yAxisLeft.setEnabled(false)
+
+        barChart.axisRight.setEnabled(false)
+
         barChart.animateY(1000)
     }
 
