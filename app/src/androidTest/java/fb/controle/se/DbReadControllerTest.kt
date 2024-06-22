@@ -160,6 +160,7 @@ class DbReadControllerTest {
         assertEquals(expected, actual)
     }
 
+    @Test
     fun testReadIconFromId() {
         var expected: String? = null
         var actual = dbCategoryReader.readIconFromId(1)
