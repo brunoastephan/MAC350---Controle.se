@@ -191,6 +191,39 @@ class DbTransactionReader(context: Context, dbHelper: SQLiteOpenHelper = DbHelpe
 
         return total
     }
+
+    fun readTransactionsFromCategoryIdInTimeInterval(
+        categoryId: Int,
+        beginTime: LocalDateTime,
+        endTime: LocalDateTime
+    ): MutableList<Int> {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")
+
+        val transactionsSumTimeIntervalSQL =
+            "SELECT ${BaseColumns._ID} " +
+                    "FROM ${DatabaseContract.TransactionsEntry.TABLE_NAME} " +
+                    "WHERE ${DatabaseContract.TransactionsEntry.COLUMN_DATE} BETWEEN \'${
+                        beginTime.format(
+                            formatter
+                        )
+                    }\' AND \'${endTime.format(formatter)}\' AND " +
+                    "${DatabaseContract.TransactionsEntry.COLUMN_CATEGORY_ID} = $categoryId "
+
+        val cursor = database.rawQuery(transactionsSumTimeIntervalSQL, null)
+
+        val transactions = mutableListOf<Int>()
+
+        with(cursor) {
+            while (moveToNext()) {
+                val itemId = getInt(getColumnIndexOrThrow(BaseColumns._ID))
+                transactions.add(itemId)
+            }
+        }
+
+        cursor.close()
+
+        return transactions
+    }
 }
 
 

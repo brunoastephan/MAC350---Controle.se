@@ -177,6 +177,46 @@ class DbReadControllerTest {
         assertEquals(expected, actual)
     }
 
+
+    @Test
+    fun testReadTransactionsFromCategoryIdInTimeInterval() {
+        var beginTime = LocalDateTime.of(1980, 1, 1, 1, 1)
+        var endTime = LocalDateTime.of(3000, 12, 30, 12, 59)
+        var categoryId = 1
+        var expected: MutableList<Int> = mutableListOf()
+        var actual = dbTransactionReader.readTransactionsFromCategoryIdInTimeInterval(categoryId, beginTime, endTime)
+        assertEquals(expected, actual)
+
+        addDbSamples1()
+        beginTime = LocalDateTime.of(1980, 1, 1, 1, 1)
+        endTime = LocalDateTime.of(1980, 1, 1, 1, 1)
+        categoryId = 1
+        expected = mutableListOf()
+        actual = dbTransactionReader.readTransactionsFromCategoryIdInTimeInterval(categoryId, beginTime, endTime)
+        assertEquals(expected, actual)
+
+        beginTime = LocalDateTime.of(1980, 1, 1, 1, 1)
+        endTime = LocalDateTime.of(3000, 12, 30, 12, 59)
+        categoryId = 1
+        expected = mutableListOf(1, 3, 4)
+        actual = dbTransactionReader.readTransactionsFromCategoryIdInTimeInterval(categoryId, beginTime, endTime)
+        assertEquals(expected, actual)
+
+        beginTime = LocalDateTime.of(1980, 1, 1, 1, 1)
+        endTime = LocalDateTime.of(3000, 12, 30, 12, 59)
+        categoryId = 2
+        expected = mutableListOf(2, 5)
+        actual = dbTransactionReader.readTransactionsFromCategoryIdInTimeInterval(categoryId, beginTime, endTime)
+        assertEquals(expected, actual)
+
+        beginTime = LocalDateTime.of(2024, 6, 9, 1, 1)
+        endTime = LocalDateTime.of(2024, 6, 11, 12, 59)
+        categoryId = 1
+        expected = mutableListOf(4)
+        actual = dbTransactionReader.readTransactionsFromCategoryIdInTimeInterval(categoryId, beginTime, endTime)
+        assertEquals(expected, actual)
+    }
+
     @After
     fun deleteDb() {
         val context = InstrumentationRegistry.getInstrumentation().targetContext
