@@ -180,7 +180,9 @@ class DynamicTimeBarChart(
 
         barChart.axisRight.setEnabled(false)
 
-        barChart.animateY(1000)
+        barChart.notifyDataSetChanged()
+        barChart.invalidate()
+//        barChart.animateY(1000)
     }
 }
 
