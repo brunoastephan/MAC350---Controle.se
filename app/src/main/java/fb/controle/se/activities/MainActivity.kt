@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.BaseColumns
 import android.util.Log
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
@@ -12,19 +11,8 @@ import android.widget.Button
 import android.widget.TextView
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.components.YAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import fb.controle.se.R
-import fb.controle.se.database.DatabaseContract
 import fb.controle.se.database.DbCategoryReader
 import fb.controle.se.database.DbTransactionReader
 import fb.controle.se.database.DbWriteController
@@ -160,31 +148,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setupPieChart() {
-        val pieChart : PieChart = findViewById(R.id.dummyPieChart)
-        val categoryEntries = ArrayList<PieEntry>()
-
-        val categories = dbCategoryReader.readCategories()
-
-        for (category in categories) {
-            val categoryId = category[BaseColumns._ID] as Int
-            val total = dbTransactionReader.readTransactionsTotalFromCategoryId(categoryId)
-            val categoryName = category[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String
-
-            if (total != 0.0F) categoryEntries.add(PieEntry(total, categoryName))
-        }
-
-        val pieDataSet = PieDataSet(categoryEntries, getString(R.string.label_category_pie_chart))
-        pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
-
-        val pieData = PieData(pieDataSet)
-
-        pieChart.data = pieData
-        pieChart.description.isEnabled = false
-        pieChart.centerText = getString(R.string.text_category_pie_chart)
-        pieChart.animate()
-    }
-
     private fun setupFirstTimeLogin() {
         Log.i("FIRST_LOGIN_INFO", "User first login registered")
 
@@ -237,8 +200,6 @@ class MainActivity : AppCompatActivity() {
 
         setupTransactionTotalView()
         setupFloatingFabButton()
-
-//        setupPieChart()
 
         supportActionBar?.hide()
     }
