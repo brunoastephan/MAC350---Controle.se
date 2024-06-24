@@ -17,6 +17,25 @@ import java.time.temporal.TemporalAdjusters.firstDayOfMonth
 import java.time.temporal.TemporalAdjusters.firstDayOfYear
 import java.time.temporal.TemporalAdjusters.lastDayOfMonth
 import java.time.temporal.TemporalAdjusters.lastDayOfYear
+import kotlin.random.Random
+
+fun getDayRange(currTime: LocalDateTime, day: Int): Pair<LocalDateTime, LocalDateTime> {
+    val beginTime = currTime.withDayOfMonth(day).withHour(0).withMinute(0).withSecond(0)
+    val endTime = currTime.withDayOfMonth(day).withHour(23).withMinute(59).withSecond(59)
+    return Pair(beginTime, endTime)
+}
+
+fun getMonthRange(currTime: LocalDateTime, month: Int): Pair<LocalDateTime, LocalDateTime> {
+    val beginTime = currTime.withMonth(month).with(firstDayOfMonth()).withHour(0).withMinute(0).withSecond(0)
+    val endTime = currTime.withMonth(month).with(lastDayOfMonth()).withHour(23).withMinute(59).withSecond(59)
+    return Pair(beginTime, endTime)
+}
+
+fun getYearRange(currTime: LocalDateTime, year: Int): Pair<LocalDateTime, LocalDateTime> {
+    val beginTime = currTime.withYear(year).with(firstDayOfYear()).withHour(0).withMinute(0).withSecond(0)
+    val endTime = currTime.withYear(year).with(lastDayOfYear()).withHour(23).withMinute(59).withSecond(59)
+    return Pair(beginTime, endTime)
+}
 
 class DynamicTimeBarChart(
     private val context: Context,
@@ -71,12 +90,6 @@ class DynamicTimeBarChart(
         configBarChart(barData, context.getString(R.string.bar_chart_description_day), days)
     }
 
-    private fun getDayRange(currTime: LocalDateTime, day: Int): Pair<LocalDateTime, LocalDateTime> {
-        val beginTime = currTime.withDayOfMonth(day).withHour(0).withMinute(0).withSecond(0)
-        val endTime = currTime.withDayOfMonth(day).withHour(23).withMinute(59).withSecond(59)
-        return Pair(beginTime, endTime)
-    }
-
     private fun setupBarChartMonth() {
         val months = listOf(
             context.getString(R.string.month_january),
@@ -115,11 +128,7 @@ class DynamicTimeBarChart(
         val barData = BarData(barDataSet)
         configBarChart(barData, context.getString(R.string.bar_chart_description_month), months)
     }
-    private fun getMonthRange(currTime: LocalDateTime, month: Int): Pair<LocalDateTime, LocalDateTime> {
-        val beginTime = currTime.withMonth(month).with(firstDayOfMonth()).withHour(0).withMinute(0).withSecond(0)
-        val endTime = currTime.withMonth(month).with(lastDayOfMonth()).withHour(23).withMinute(59).withSecond(59)
-        return Pair(beginTime, endTime)
-    }
+
     private fun setupBarChartYear() {
         val currTime = LocalDateTime.now()
         val currentYear = currTime.year
@@ -145,12 +154,6 @@ class DynamicTimeBarChart(
 
         val barData = BarData(barDataSet)
         configBarChart(barData, context.getString(R.string.bar_chart_description_year), years)
-    }
-
-    private fun getYearRange(currTime: LocalDateTime, year: Int): Pair<LocalDateTime, LocalDateTime> {
-        val beginTime = currTime.withYear(year).with(firstDayOfYear()).withHour(0).withMinute(0).withSecond(0)
-        val endTime = currTime.withYear(year).with(lastDayOfYear()).withHour(23).withMinute(59).withSecond(59)
-        return Pair(beginTime, endTime)
     }
 
     private fun configBarChart(barData: BarData, textDescription: String,indexValueFormatter: Collection<String>) {
