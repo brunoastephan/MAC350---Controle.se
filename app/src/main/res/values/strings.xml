@@ -66,4 +66,8 @@
     <string name="bar_chart_description_month">Transações em meses</string>
     <string name="bar_chart_description_year">Transações ao longo dos anos</string>
 
+    <string name="pie_chart_description_day">Categorias de Transações do Dia</string>
+    <string name="pie_chart_description_month">Categorias de Transações do Mês</string>
+    <string name="pie_chart_description_year">Categorias de Transações do Ano</string>
+
 </resources>

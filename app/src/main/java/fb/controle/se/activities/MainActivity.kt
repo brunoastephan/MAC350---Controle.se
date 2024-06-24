@@ -29,6 +29,7 @@ import fb.controle.se.database.DbCategoryReader
 import fb.controle.se.database.DbTransactionReader
 import fb.controle.se.database.DbWriteController
 import fb.controle.se.utils.DynamicTimeBarChart
+import fb.controle.se.utils.DynamicTimePieChart
 import fb.controle.se.utils.TransactionViewState
 
 class MainActivity : AppCompatActivity() {
@@ -40,7 +41,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var transactionTotalView : TextView
     private lateinit var transactionTotalViewIndicator : TextView
 
-    private var transactionViewState = TransactionViewState.YEAR
+    private var transactionViewState = TransactionViewState.DAY
 
     private lateinit var fab : FloatingActionButton
     private lateinit var fab1 : FloatingActionButton
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var dbTransactionReader: DbTransactionReader
 
     private lateinit var dynamicTimeBarChart: DynamicTimeBarChart
+    private lateinit var dynamicTimePieChart: DynamicTimePieChart
 
     private fun animateFab() {
         if (isOpen) {
@@ -140,18 +142,21 @@ class MainActivity : AppCompatActivity() {
             transactionTotalView.text = transactionsTotalDayFormatted
             transactionTotalViewIndicator.text = getString(R.string.day_button)
             dynamicTimeBarChart.updateState(TransactionViewState.DAY)
+            dynamicTimePieChart.updateState(TransactionViewState.DAY)
         }
         btnMonth.setOnClickListener {
             transactionViewState = TransactionViewState.MONTH
             transactionTotalView.text = transactionsTotalMonthFormatted
             transactionTotalViewIndicator.text = getString(R.string.month_button)
             dynamicTimeBarChart.updateState(TransactionViewState.MONTH)
+            dynamicTimePieChart.updateState(TransactionViewState.MONTH)
         }
         btnYear.setOnClickListener {
             transactionViewState = TransactionViewState.YEAR
             transactionTotalView.text = transactionsTotalYearFormatted
             transactionTotalViewIndicator.text = getString(R.string.year_button)
             dynamicTimeBarChart.updateState(TransactionViewState.YEAR)
+            dynamicTimePieChart.updateState(TransactionViewState.YEAR)
         }
     }
 
@@ -227,11 +232,13 @@ class MainActivity : AppCompatActivity() {
         val barChart : BarChart = findViewById(R.id.dummyBarChart)
         dynamicTimeBarChart = DynamicTimeBarChart(this, barChart, transactionViewState)
 
+        val pieChart: PieChart = findViewById(R.id.dummyPieChart)
+        dynamicTimePieChart = DynamicTimePieChart(this, pieChart, transactionViewState)
 
         setupTransactionTotalView()
         setupFloatingFabButton()
 
-        setupPieChart()
+//        setupPieChart()
 
         supportActionBar?.hide()
     }

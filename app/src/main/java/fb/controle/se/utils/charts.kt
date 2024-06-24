@@ -1,15 +1,21 @@
 package fb.controle.se.utils
 
 import android.content.Context
+import android.provider.BaseColumns
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.components.YAxis
 import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.data.PieData
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import fb.controle.se.R
+import fb.controle.se.database.DatabaseContract
 import fb.controle.se.database.DbCategoryReader
 import fb.controle.se.database.DbTransactionReader
 import java.time.LocalDateTime
@@ -17,7 +23,6 @@ import java.time.temporal.TemporalAdjusters.firstDayOfMonth
 import java.time.temporal.TemporalAdjusters.firstDayOfYear
 import java.time.temporal.TemporalAdjusters.lastDayOfMonth
 import java.time.temporal.TemporalAdjusters.lastDayOfYear
-import kotlin.random.Random
 
 fun getDayRange(currTime: LocalDateTime, day: Int): Pair<LocalDateTime, LocalDateTime> {
     val beginTime = currTime.withDayOfMonth(day).withHour(0).withMinute(0).withSecond(0)
@@ -186,18 +191,77 @@ class DynamicTimeBarChart(
     }
 }
 
-fun plotPieChart(viewState: TransactionViewState) {
+class DynamicTimePieChart(
+    private val context: Context,
+    private val pieChart: PieChart,
+    private var viewState: TransactionViewState
+) {
 
-}
+    private val dbTransactionReader = DbTransactionReader(context)
+    private val dbCategoryReader = DbCategoryReader(context)
+    private val colorTemplate = ColorTemplate.COLORFUL_COLORS.toList()
 
-fun plotPieChartDay() {
+    init {
+        setupPieChart()
+    }
 
-}
+    fun updateState(newViewState: TransactionViewState) {
+        viewState = newViewState
+        setupPieChart()
+    }
 
-fun plotPieChartMonth() {
+    fun setupPieChart() {
+        when (viewState) {
+            TransactionViewState.DAY -> setupPieChartDay()
+            TransactionViewState.MONTH -> setupPieChartMonth()
+            TransactionViewState.YEAR -> setupPieChartYear()
+        }
+    }
 
-}
+    private fun setupPieChartDay() {
+        val currTime = LocalDateTime.now()
+        val (beginTime, endTime) = getDayRange(currTime, currTime.dayOfMonth)
+        setupPieChartInterval(beginTime, endTime, context.getString(R.string.pie_chart_description_day))
+    }
 
-fun plotPieChartYear() {
+    private fun setupPieChartMonth() {
+        val currTime = LocalDateTime.now()
+        val (beginTime, endTime) = getMonthRange(currTime, currTime.monthValue)
+        setupPieChartInterval(beginTime, endTime, context.getString(R.string.pie_chart_description_month))
+    }
 
+    private fun setupPieChartYear() {
+        val currTime = LocalDateTime.now()
+        val (beginTime, endTime) = getYearRange(currTime, currTime.year)
+        setupPieChartInterval(beginTime, endTime, context.getString(R.string.pie_chart_description_year))
+    }
+
+    private fun setupPieChartInterval(beginTime: LocalDateTime, endTime: LocalDateTime, textDescription: String) {
+        val categories = dbCategoryReader.readCategories()
+
+        val categoryEntries = ArrayList<PieEntry>()
+
+        for (category in categories) {
+            val categoryId = category[BaseColumns._ID] as Int
+            val transactionIdsInInterval = dbTransactionReader.readTransactionsFromCategoryIdInTimeInterval(categoryId, beginTime, endTime)
+            val total = dbTransactionReader.readTransactionsTotalFromIds(transactionIdsInInterval)
+            val categoryName = category[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String
+            if (total > 0) categoryEntries.add(PieEntry(total, categoryName))
+        }
+
+        val pieDataSet = PieDataSet(categoryEntries, null)
+        pieDataSet.colors = colorTemplate
+
+        val pieData = PieData(pieDataSet)
+        configPieChart(pieData, textDescription)
+    }
+
+    private fun configPieChart(pieData: PieData, textDescription: String) {
+        pieChart.data = pieData
+        pieChart.description.isEnabled = false
+        pieChart.centerText = textDescription
+        pieChart.animate()
+        pieChart.notifyDataSetChanged()
+        pieChart.invalidate()
+    }
 }
