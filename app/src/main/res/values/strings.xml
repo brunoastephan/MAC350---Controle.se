@@ -49,4 +49,21 @@
     <string name="select_category">SELECIONAR CATEGORIA</string>
     <string name="no_category_selected_warning">Por favor, selecione uma categoria!</string>
 
+    <string name="month_january">Jan</string>
+    <string name="month_february">Fev</string>
+    <string name="month_march">Mar</string>
+    <string name="month_april">Abr</string>
+    <string name="month_may">Mai</string>
+    <string name="month_june">Jun</string>
+    <string name="month_july">Jul</string>
+    <string name="month_august">Ago</string>
+    <string name="month_september">Set</string>
+    <string name="month_october">Out</string>
+    <string name="month_november">Nov</string>
+    <string name="month_december">Dez</string>
+
+    <string name="bar_chart_description_day">Transações em dias do Mês</string>
+    <string name="bar_chart_description_month">Transações em meses</string>
+    <string name="bar_chart_description_year">Transações ao longo dos anos</string>
+
 </resources>

@@ -28,10 +28,8 @@ import fb.controle.se.database.DatabaseContract
 import fb.controle.se.database.DbCategoryReader
 import fb.controle.se.database.DbTransactionReader
 import fb.controle.se.database.DbWriteController
-
-enum class TransactionViewState {
-    DAY, MONTH, YEAR
-}
+import fb.controle.se.utils.DynamicTimeBarChart
+import fb.controle.se.utils.TransactionViewState
 
 class MainActivity : AppCompatActivity() {
     private lateinit var preferences: SharedPreferences
@@ -55,6 +53,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var dbCategoryReader: DbCategoryReader
     private lateinit var dbTransactionReader: DbTransactionReader
+
+    private lateinit var dynamicTimeBarChart: DynamicTimeBarChart
 
     private fun animateFab() {
         if (isOpen) {
@@ -139,16 +139,19 @@ class MainActivity : AppCompatActivity() {
             transactionViewState = TransactionViewState.DAY
             transactionTotalView.text = transactionsTotalDayFormatted
             transactionTotalViewIndicator.text = getString(R.string.day_button)
+            dynamicTimeBarChart.updateState(TransactionViewState.DAY)
         }
         btnMonth.setOnClickListener {
             transactionViewState = TransactionViewState.MONTH
             transactionTotalView.text = transactionsTotalMonthFormatted
             transactionTotalViewIndicator.text = getString(R.string.month_button)
+            dynamicTimeBarChart.updateState(TransactionViewState.MONTH)
         }
         btnYear.setOnClickListener {
             transactionViewState = TransactionViewState.YEAR
             transactionTotalView.text = transactionsTotalYearFormatted
             transactionTotalViewIndicator.text = getString(R.string.year_button)
+            dynamicTimeBarChart.updateState(TransactionViewState.YEAR)
         }
     }
 
@@ -175,60 +178,6 @@ class MainActivity : AppCompatActivity() {
         pieChart.description.isEnabled = false
         pieChart.centerText = getString(R.string.text_category_pie_chart)
         pieChart.animate()
-    }
-
-    private fun setupBarChart() {
-        val barChart : BarChart = findViewById(R.id.dummyBarChart)
-        val visitors = ArrayList<BarEntry>()
-
-
-        val categories = dbCategoryReader.readCategories()
-        val categoryNames = categories.map { it[DatabaseContract.CategoriesEntry.COLUMN_NAME] as String}
-        val categoryTransactionTotals = mutableListOf<Float>()
-
-        for (category in categories) {
-            val categoryId = category[BaseColumns._ID] as Int
-            categoryTransactionTotals.add(dbTransactionReader.readTransactionsTotalFromCategoryId(categoryId))
-        }
-
-        // sort category names by transaction totals per category
-        val categoriesNameTransactionTotal = categoryTransactionTotals.zip(categoryNames)
-        val sortedCategoriesNameTransactionTotal = categoriesNameTransactionTotal.sortedByDescending { it.first }
-        val (sortedCategoryTransactionTotals, sortedCategoryNames) = sortedCategoriesNameTransactionTotal.unzip()
-
-        for ((i, categoryTransactionTotal) in sortedCategoryTransactionTotals.withIndex()) {
-            visitors.add(BarEntry(i.toFloat(), categoryTransactionTotal))
-        }
-
-        val barDataSet = BarDataSet(visitors, "Datas")
-        barDataSet.colors = ColorTemplate.COLORFUL_COLORS.toList()
-
-        val barData = BarData(barDataSet)
-
-        barChart.setFitBars(false)
-        barChart.setDrawBarShadow(false)
-        barChart.setDrawGridBackground(false)
-        barChart.data = barData
-        barChart.description.text = "Gastos ao Longo do Tempo"
-        barChart.setVisibleXRangeMaximum(3F)
-
-        val xAxis = barChart.xAxis
-        xAxis.setDrawGridLines(false)
-        xAxis.setDrawLabels(true)
-        xAxis.setDrawAxisLine(false)
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
-        xAxis.granularity = 1F
-        xAxis.valueFormatter = IndexAxisValueFormatter(sortedCategoryNames)
-
-        val yAxisLeft = barChart.axisLeft
-        yAxisLeft.setPosition(YAxis.YAxisLabelPosition.INSIDE_CHART)
-        yAxisLeft.setDrawGridLines(false)
-        yAxisLeft.setDrawAxisLine(false)
-        yAxisLeft.setEnabled(false)
-
-        barChart.axisRight.setEnabled(false)
-
-        barChart.animateY(1000)
     }
 
     private fun setupFirstTimeLogin() {
@@ -275,11 +224,14 @@ class MainActivity : AppCompatActivity() {
         val firstTimeLogin = preferences.getBoolean("firstTimeLogin", true)
         if (firstTimeLogin) setupFirstTimeLogin()
 
+        val barChart : BarChart = findViewById(R.id.dummyBarChart)
+        dynamicTimeBarChart = DynamicTimeBarChart(this, barChart, transactionViewState)
+
+
         setupTransactionTotalView()
         setupFloatingFabButton()
 
         setupPieChart()
-        setupBarChart()
 
         supportActionBar?.hide()
     }
